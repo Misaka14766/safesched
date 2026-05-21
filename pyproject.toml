@@ -36,3 +36,15 @@ safesched = "safesched.cli:main"
 [project.urls]
 "Homepage" = "https://github.com/Misaka14766/safesched"
 "Bug Tracker" = "https://github.com/Misaka14766/safesched/issues"
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=6.0",
+    "pytest-mock>=3.6",
+]
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "-v"
+testpaths = ["tests"]
+python_files = ["test_*.py"]

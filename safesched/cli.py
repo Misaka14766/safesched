@@ -209,8 +209,8 @@ def main():
   # 指定GPU和并发数
   cat tasks.txt | safesched -g 0,1 -j 4 python process.py {}
   
-  # 运行单个脚本（自动选最空闲GPU）
-  safesched run python train_model.py
+  # 单次任务运行
+  safesched python train_model.py
   
   # 任务超时1小时，重试3次
   cat big_tasks.txt | safesched -t 3600 -r 3 python process_big.py {}
@@ -228,50 +228,18 @@ def main():
                        help="单个任务超时时间(秒)（默认1小时）")
     parser.add_argument("-v", "--verbose", action="store_true", 
                        help="详细日志输出")
-    
-    # 子命令
-    subparsers = parser.add_subparsers(title="子命令", dest="subcommand")
-    
-    # run子命令：运行单个命令
-    run_parser = subparsers.add_parser("run", help="运行单个命令，自动选择最空闲GPU")
-    run_parser.add_argument("command", nargs=argparse.REMAINDER, help="要运行的命令")
-    
+
     # 主命令：批量处理（默认）
     parser.add_argument("command", nargs=argparse.REMAINDER, help="命令模板，用{}表示任务参数")
-    
     args = parser.parse_args()
-    
-    # 处理run子命令
-    if args.subcommand == "run":
-        if not args.command:
-            logger.error("没有指定要运行的命令")
-            sys.exit(1)
-        
-        gpus = detect_gpus()
-        if gpus:
-            gpu_id = get_idlest_gpu(gpus)
-            logger.info(f"自动选择最空闲GPU: {gpu_id}")
-            env = os.environ.copy()
-            env["CUDA_VISIBLE_DEVICES"] = str(gpu_id)
-        else:
-            logger.info("未检测到GPU，使用CPU运行")
-            env = os.environ.copy()
-        
-        env["OMP_NUM_THREADS"] = "1"
-        
-        try:
-            result = subprocess.run(args.command, env=env)
-            sys.exit(result.returncode)
-        except KeyboardInterrupt:
-            sys.exit(130)
-    
+
     # 批量处理模式
     if not args.command:
         parser.print_help()
         sys.exit(1)
-    
+
     # 移除--分隔符（兼容旧语法）
-    if args.command[0] == '--':
+    if args.command and args.command[0] == '--':
         args.command = args.command[1:]
     
     # 检查命令模板是否包含{}

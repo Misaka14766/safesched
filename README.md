@@ -26,24 +26,35 @@ pipx install safesched
 
 ```bash
 python -m venv .venv
-source .venv/bin/activate  # Windows: .venv\Scripts\activate
+# macOS / Linux
+source .venv/bin/activate
+# Windows PowerShell
+.\.venv\Scripts\Activate.ps1
+# Windows CMD
+.\.venv\Scripts\activate.bat
 pip install safesched
-```
-
-### 从源码安装（开发者）
-
-```bash
-git clone https://github.com/Misaka14766/safesched.git
-cd safesched
-pip install -e .
 ```
 
 ## 🚀 快速开始
 
 ### 批量调度任务（从 stdin）
 
+macOS / Linux:
+
 ```bash
 cat tasks.txt | safesched python process.py {}
+```
+
+Windows PowerShell:
+
+```powershell
+Get-Content tasks.txt | safesched python process.py {}
+```
+
+Windows CMD:
+
+```cmd
+type tasks.txt | safesched python process.py {}
 ```
 
 其中 `tasks.txt` 每行一个参数，`{}` 作为占位符被替换。
@@ -53,7 +64,7 @@ cat tasks.txt | safesched python process.py {}
 自动选择最空闲的 GPU 并执行：
 
 ```bash
-safesched run python train_model.py
+safesched python train_model.py
 ```
 
 ### 指定 GPU 并配置并发
@@ -82,72 +93,6 @@ ls *.mp4 | safesched -j 4 -t 1800 python encode.py {}
 ```bash
 cat tasks.txt | safesched python lightweight_task.py {}
 ```
-
-## 🧪 开发与测试
-
-### 安装开发依赖
-
-```bash
-git clone https://github.com/Misaka14766/safesched.git
-cd safesched
-pip install -e ".[dev]"
-```
-
-### 运行测试
-
-```bash
-# 运行所有测试
-pytest -v
-
-# 运行特定测试模块
-pytest tests/test_monitor.py -v
-pytest tests/test_cli.py -v
-
-# 显示覆盖率（需要 pytest-cov）
-pytest --cov=safesched tests/
-```
-
-## 🔄 CI/CD 工作流
-
-项目使用 **GitHub Actions** 自动进行持续集成和发布：
-
-| 工作流 | 触发条件 | 功能 |
-|--------|--------|------|
-| **Tests** | Push 到 `main` 或 `develop`，PR | 在 Ubuntu/Windows/macOS 上测试 Python 3.8~3.12 |
-| **Publish** | 创建 Release 或推送 `v*` tag | 自动构建并发布到 PyPI |
-
-### 发布新版本
-
-1. **更新版本号**
-   ```bash
-   # 编辑 pyproject.toml，修改 version = "x.y.z"
-   ```
-
-2. **提交并推送**
-   ```bash
-   git add pyproject.toml
-   git commit -m "Release v0.2.0"
-   git push origin main
-   ```
-
-3. **创建 Release（推荐）或打 tag**
-   ```bash
-   # 方式 1: 在 GitHub 上创建 Release（更正式）
-   
-   # 方式 2: 使用 git tag
-   git tag v0.2.0
-   git push origin v0.2.0
-   ```
-
-4. **GitHub Actions 自动处理**
-   - 构建分发包（.whl 和 .tar.gz）
-   - 运行 twine 检查元数据
-   - 上传到 PyPI
-
-> ⚠️ **注意**：首次发布需要在 GitHub 仓库 Settings 中配置 `PYPI_API_TOKEN` secret，获取方式：
-> 1. 在 https://pypi.org 注册账号
-> 2. 创建 API Token（Account Settings → API tokens）
-> 3. 在 GitHub 仓库 Settings → Secrets → New repository secret，添加 `PYPI_API_TOKEN`
 
 ## 📝 许可证
 

@@ -60,3 +60,6 @@ ehthumbs.db
 # Temporary files
 *.tmp
 *~
+
+# Miscellaneous files
+misc/

@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "safesched"
-version = "0.1.0"
+version = "0.1.1"
 authors = [
   { name="Misaka14766", email="misaka14766@gmail.com" }
 ]

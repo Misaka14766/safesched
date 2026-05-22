@@ -48,13 +48,7 @@ cat tasks.txt | safesched python process.py {}
 Windows PowerShell:
 
 ```powershell
-Get-Content tasks.txt | safesched python process.py {}
-```
-
-Windows CMD:
-
-```cmd
-type tasks.txt | safesched python process.py {}
+Get-Content tasks.txt | safesched python process.py "{}"
 ```
 
 其中 `tasks.txt` 每行一个参数，`{}` 作为占位符被替换。
@@ -97,12 +91,6 @@ cat tasks.txt | safesched python lightweight_task.py {}
 ## 📝 许可证
 
 MIT License - 详见 [LICENSE](LICENSE) 文件
-
-## 👤 作者
-
-- **Misaka14766**
-- 📧 [misaka14766@gmail.com](mailto:misaka14766@gmail.com)
-- 🔗 [GitHub](https://github.com/Misaka14766/safesched)
 
 ## 💬 反馈与贡献
 

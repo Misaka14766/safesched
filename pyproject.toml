@@ -4,13 +4,14 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "safesched"
-version = "0.1.1"
+version = "0.1.2"
 authors = [
   { name="Misaka14766", email="misaka14766@gmail.com" }
 ]
 description = "安全的资源感知任务调度器，永远不会把你的机器跑崩"
 readme = "README.md"
-license = { file="LICENSE" }
+license = "MIT"  # 修复：标准 SPDX 写法
+license-files = ["LICENSE"]
 requires-python = ">=3.8"
 classifiers = [
     "Programming Language :: Python :: 3",
@@ -19,7 +20,6 @@ classifiers = [
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
-    "License :: OSI Approved :: MIT License",
     "Operating System :: POSIX :: Linux",
     "Topic :: System :: Distributed Computing",
     "Topic :: Scientific/Engineering :: Artificial Intelligence",
@@ -48,3 +48,6 @@ minversion = "6.0"
 addopts = "-v"
 testpaths = ["tests"]
 python_files = ["test_*.py"]
+
+[tool.setuptools.packages]
+find = { include = ["safesched"] }

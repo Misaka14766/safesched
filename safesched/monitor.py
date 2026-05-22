@@ -2,11 +2,21 @@ import time
 import threading
 import psutil
 import subprocess
+import logging
 from typing import List
 
+logger = logging.getLogger(__name__)
+
 class ResourceMonitor:
-    def __init__(self, gpu_ids: List[int] = None):
+    def __init__(self, gpu_ids: List[int] = None, thresholds: dict = None):
         self.gpu_ids = gpu_ids or []
+        self.thresholds = thresholds or {
+            'cpu': 90,
+            'mem': 70,
+            'disk': 90,
+            'io': 90,
+            'gpu_mem': 75
+        }
         self._stop = False
         self._thread = threading.Thread(target=self._monitor_loop, daemon=True)
         
@@ -55,12 +65,12 @@ class ResourceMonitor:
             for g in self.gpu_ids:
                 self._status["gpu_mem"][g] = self._get_gpu_mem(g)
             
-            # 保守的资源阈值，默认即安全
+            # 资源阈值检查
             self._status["overloaded"] = (
-                self._status["cpu"] > 90 or
-                self._status["mem"] > 70 or
-                self._status["disk"] > 90 or
-                self._status["io"] > 90
+                self._status["cpu"] > self.thresholds['cpu'] or
+                self._status["mem"] > self.thresholds['mem'] or
+                self._status["disk"] > self.thresholds['disk'] or
+                self._status["io"] > self.thresholds['io']
             )
 
     def _monitor_loop(self):
@@ -68,7 +78,8 @@ class ResourceMonitor:
             try:
                 self._update_status()
                 time.sleep(5)
-            except:
+            except Exception as e:
+                logger.error(f"监控循环异常: {e}")
                 time.sleep(2)
 
     def is_overloaded(self) -> bool:
@@ -77,7 +88,7 @@ class ResourceMonitor:
 
     def is_gpu_overloaded(self, gpu_id: int) -> bool:
         with self._lock:
-            return self._status["gpu_mem"].get(gpu_id, 0) > 75
+            return self._status["gpu_mem"].get(gpu_id, 0) > self.thresholds['gpu_mem']
 
     def get_summary(self) -> str:
         with self._lock:

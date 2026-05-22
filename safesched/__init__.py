@@ -7,6 +7,6 @@ safesched - 安全的资源感知任务调度器
   safesched run python train.py
 """
 
-__version__ = "0.1.0"
+__version__ = "0.1.1"
 __author__ = "Misaka14766"
 __email__ = "misaka14766@gmail.com"
